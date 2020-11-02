@@ -1,0 +1,80 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: network
+      become: yes
+      docker_network:
+        name: infra_network
+        ipam_options:
+          subnet: '172.18.0.0/16'
+          gateway: 172.18.0.1
+
+    - name: Start container and design ports 1
+      become: yes
+      docker_container:
+        name: infra1
+        image: registry.gitlab.com/salamachinas/infra-challenge
+        ports:
+        - "4001:4000"
+        networks:
+        - name: infra_network
+          ipv4_address: 172.18.0.2
+
+    - name: Start container and design ports 3
+      become: yes
+      docker_container:
+        name: infra3
+        image: registry.gitlab.com/salamachinas/infra-challenge
+        ports:
+        - "4002:4000"
+        networks:
+        - name: infra_network
+          ipv4_address: 172.18.0.3
+
+    - name: Start container and design ports 4
+      become: yes
+      docker_container:
+        name: infra4
+        image: registry.gitlab.com/salamachinas/infra-challenge
+        ports:
+        - "4003:4000"
+        networks:
+        - name: infra_network
+          ipv4_address: 172.18.0.4
+
+    - name: Loadbalancer
+      become: yes
+      docker_container:
+        name: loadbalancer
+        image: silicone/nginxloadbalancer:005
+        ports:
+        - "8081:80"
+        networks:
+        - name: infra_network
+          ipv4_address: 172.18.0.5
