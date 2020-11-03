@@ -16,8 +16,8 @@ function status {
 
 function deploy {
   echo "For which purposes do you want to deploy VM?"
-  echo "1. Deploy VM to publish application on internet"
-  echo "2. Deploy VM to test application before publishing on internet"
+  echo "1. Deploy VM to publish application on the internet"
+  echo "2. Deploy VM to test application before publishing on the internet"
   echo "Select between 1-2:"
   read choice4
     if [ $choice4 = 1 ]
@@ -201,17 +201,28 @@ function nginx {
     fi
 }
 
+function install {
+  echo "Installing needed packages..."
+  echo ""
+  echo "Please wait..."
+  echo ""
+  sudo apt-get update
+  sudo apt-get install -y ansible vagrant virtualbox virtualbox-ext-pack nginx
+  echo ""
+  echo "All needed packages should be installed"
+  read -n 1 -s -r -p "Press any key to continue..."
+}
 
 function main {
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   echo "~~~~~ Welcome to deployment console ~~~~~~~~~~"
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   echo " "
-  echo "1. Check currently existing vagrant VMs status"
-  echo "2. Deploy and Run application VM machine"
-  echo "3. Run/Stop/Destroy existing vagrant machine"
+  echo "1. Check currently deployed vmbox statuses"
+  echo "2. Deploy and Run vmbox machine with application"
+  echo "3. Run/Stop/Destroy existing vmbox machine"
   echo "4. Change nginx configuration file"
-  echo "5. Run docker application containers in selected VM"
+  echo "5. Install packages needed for deployment"
   echo " "
   echo "Please select between 1-5 choices:"
 
@@ -235,6 +246,11 @@ function main {
   if [ $choice = 4 ]
   then
       nginx;
+  fi
+
+  if [ $choice = 5 ]
+  then
+      install;
   fi
 
   echo "viskas"

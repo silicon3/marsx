@@ -4,8 +4,8 @@
   gather_facts: false
 
   pre_tasks:
-    - raw: sudo apt-get -y install python-simplejson 
-    # action: setup will gather things
+    # Installing needed packages for Ubuntu 18.04 LTS compatibility
+    - raw: sudo apt-get -y install python-simplejson
     - action: setup
 
   tasks:
@@ -14,7 +14,8 @@
          name: python-pip
          update_cache: yes
          state: present
-
+         # --------------------------------------------------------
+    # Installing needed packages for docker
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
 
@@ -38,7 +39,8 @@
     - name: Install Docker Module for Python
       pip:
         name: docker
-
+        # Docker installed.. Moving on
+    # Creating static network configuration and deploying docker containers
     - name: network
       become: yes
       docker_network:
@@ -90,3 +92,4 @@
         networks:
         - name: infra_network
           ipv4_address: 172.18.0.5
+          # Containers deployed
