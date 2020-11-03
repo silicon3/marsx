@@ -161,7 +161,8 @@ function nginx {
           sudo rm /etc/nginx/conf.d/default.conf
           sudo rm /etc/nginx/conf.d/deploy.conf
           sudo rm /etc/nginx/sites-enabled/default
-          sudo cp /NGINX/main.conf /etc/nginx/conf.d/main.conf
+          sudo rm /etc/nginx/sites-available/default
+          sudo cp NGINX/main.conf /etc/nginx/conf.d/main.conf
           echo " "
           echo "Configuration copied"
           sudo nginx -s reload
@@ -179,7 +180,8 @@ function nginx {
           sudo rm /etc/nginx/conf.d/default.conf
           sudo rm /etc/nginx/conf.d/main.conf
           sudo rm /etc/nginx/sites-enabled/default
-          sudo cp /NGINX/deploy.conf /etc/nginx/conf.d/deploy.conf
+          sudo rm /etc/nginx/sites-available/default
+          sudo cp NGINX/deploy.conf /etc/nginx/conf.d/deploy.conf
           echo " "
           echo "Configuration copied"
           sudo nginx -s reload
