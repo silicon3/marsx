@@ -174,6 +174,7 @@ function nginx {
           sudo cat /etc/nginx/conf.d/main.conf
           echo ""
           read -n 1 -s -r -p "Press any key to continue..."
+          main;
         fi
         if [ $choice6 = 2 ]
         then
@@ -193,6 +194,7 @@ function nginx {
           sudo cat /etc/nginx/conf.d/deploy.conf
           echo ""
           read -n 1 -s -r -p "Press any key to continue..."
+          main;
         fi
       else
         echo " "
