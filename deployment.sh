@@ -76,6 +76,7 @@ function deploy {
             echo ""
             echo "Do you want to do anything more? y/n"
             read choice5
+            echo " "
               if [ "$choice5" = "y" ]
               then
                 main;
@@ -104,6 +105,7 @@ function existing {
       echo " "
       echo "Anything else? y/n"
       read $choice2
+      echo " "
         if [ "$choice2" = "y" ]
         then
           main;
@@ -120,6 +122,7 @@ function existing {
       echo " "
       echo "Anything else? y/n"
       read $choice2
+      echo " "
         if [ "$choice2" = "y" ]
         then
           main;
@@ -136,6 +139,7 @@ function existing {
       echo " "
       echo "Anything else? y/n"
       read $choice2
+      echo " "
         if [ "$choice2" = "y" ]
         then
           main;
@@ -174,6 +178,7 @@ function nginx {
           sudo cat /etc/nginx/conf.d/main.conf
           echo ""
           read -n 1 -s -r -p "Press any key to continue..."
+          echo " "
           main;
         fi
         if [ $choice6 = 2 ]
@@ -194,6 +199,7 @@ function nginx {
           sudo cat /etc/nginx/conf.d/deploy.conf
           echo ""
           read -n 1 -s -r -p "Press any key to continue..."
+          echo " "
           main;
         fi
       else
