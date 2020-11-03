@@ -160,6 +160,7 @@ function nginx {
         if [ $choice6 = 1 ]
         then
           rm /etc/nginx/conf.d/*
+          rm /etc/nginx/sites-enabled/*
           cp ./NGINX/main.conf /etc/nginx/conf.d/main.conf
           echo " "
           echo "Configuration copied"
@@ -176,6 +177,7 @@ function nginx {
         if [ $choice6 = 2 ]
         then
           rm /etc/nginx/conf.d/*
+          rm /etc/nginx/sites-enabled/*
           cp ./NGINX/deploy.conf /etc/nginx/conf.d/deploy.conf
           echo " "
           echo "Configuration copied"
