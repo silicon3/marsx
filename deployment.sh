@@ -158,10 +158,10 @@ function nginx {
       read choice6
         if [ $choice6 = 1 ]
         then
-          sudo rm /etc/nginx/conf.d/default.conf
-          sudo rm /etc/nginx/conf.d/deploy.conf
-          sudo rm /etc/nginx/sites-enabled/default
-          sudo rm /etc/nginx/sites-available/default
+          sudo rm /etc/nginx/conf.d/default.conf > /dev/null 2>&1
+          sudo rm /etc/nginx/conf.d/deploy.conf > /dev/null 2>&1
+          sudo rm /etc/nginx/sites-enabled/default > /dev/null 2>&1
+          sudo rm /etc/nginx/sites-available/default > /dev/null 2>&1
           sudo cp NGINX/main.conf /etc/nginx/conf.d/main.conf
           echo " "
           echo "Configuration copied"
@@ -177,10 +177,10 @@ function nginx {
         fi
         if [ $choice6 = 2 ]
         then
-          sudo rm /etc/nginx/conf.d/default.conf
-          sudo rm /etc/nginx/conf.d/main.conf
-          sudo rm /etc/nginx/sites-enabled/default
-          sudo rm /etc/nginx/sites-available/default
+          sudo rm /etc/nginx/conf.d/default.conf > /dev/null 2>&1
+          sudo rm /etc/nginx/conf.d/main.conf > /dev/null 2>&1
+          sudo rm /etc/nginx/sites-enabled/default > /dev/null 2>&1
+          sudo rm /etc/nginx/sites-available/default > /dev/null 2>&1
           sudo cp NGINX/deploy.conf /etc/nginx/conf.d/deploy.conf
           echo " "
           echo "Configuration copied"
