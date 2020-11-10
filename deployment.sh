@@ -15,17 +15,18 @@ function status {
 
 function deploy {
   echo "For which purposes do you want to deploy VM?"
-  echo "1. Deploy VM to publish application on the internet"
-  echo "2. Deploy VM to test application before publishing on the internet"
+  echo "1. Deploy VMs to publish application on the internet"
+  echo "2. Deploy VMs to test application before publishing on the internet"
   echo "Select between 1-2:"
   read choice4
     if [ $choice4 = 1 ]
     then
       echo "Please wait..."
       sudo vagrant global-status --prune > /dev/null 2>&1                        #Gathering information about deployed VMs
-      isonline=$(vagrant global-status --machine-readable | grep info,web1)      #Checking if web1 machine is deployed
-      if [[ $isonline == *"web1"* ]]; then
-        echo "WEB1 VM machine exists! Please destroy it before deploying a new one!"
+      isonline1=$(vagrant global-status --machine-readable | grep info,web1)
+      isonline2=$(vagrant global-status --machine-readable | grep info,web2)      #Checking if web1 machine is deployed
+      if [[ $isonline1 == *"web1"* || $isonline2 == *"web2"* ]]; then
+        echo "WEB1 or WEB2 VM machine exists! Please destroy it before deploying a new one!"
         read -n 1 -s -r -p "Press any key to continue..."
         echo " "
         main;
@@ -35,10 +36,17 @@ function deploy {
           if [ "$choice5" = "y" ]
           then
             cd VMPREP
-            sudo vagrant up web1                                                      #Deploying web1 machine
+            sudo vagrant up web1 --provider virtualbox                                                      #Deploying web1 machine
             echo ""
-            echo "Application deployed on 8086 port"
+            echo "Web1 Application deployed on 8086 port"
             echo "Access VM SSH via 2222 port or vagrant ssh web1"
+            echo "!!!Don't forget to change nginx configuration file"
+            echo "if you want to publish your application!!!"
+            echo ""
+            sudo vagrant up web2 --provider virtualbox
+            echo ""
+            echo "Web2 Application deployed on 8087 port"
+            echo "Access VM SSH via 2222 port or vagrant ssh web2"
             echo "!!!Don't forget to change nginx configuration file"
             echo "if you want to publish your application!!!"
             echo ""
@@ -57,9 +65,10 @@ function deploy {
     then
       echo "Please wait..."
       sudo vagrant global-status --prune > /dev/null 2>&1                             #Gathering information about deployed VMs
-      isonline=$(vagrant global-status --machine-readable | grep info,web2)      #Checking if web2 machine is deployed
-      if [[ $isonline == *"web2"* ]]; then
-        echo "WEB2 VM machine exists! Please destroy it before deploying a new one!"
+      isonline3=$(vagrant global-status --machine-readable | grep info,web3)
+      isonline4=$(vagrant global-status --machine-readable | grep info,web4)      #Checking if web2 machine is deployed
+      if [[ $isonline1 == *"web3"* || $isonline2 == *"web4"* ]]; then
+        echo "WEB3 or WEB4 VM machines exists! Please destroy it before deploying a new one!"
         read -n 1 -s -r -p "Press any key to continue..."
         echo " "
         main;
@@ -69,14 +78,22 @@ function deploy {
           if [ "$choice5" = "y" ]
           then
             cd VMPREP
-            sudo vagrant up web2                                                       #Deploying web2 machine
+            sudo vagrant up web3 --provider virtualbox                                                      #Deploying web1 machine
             echo ""
-            echo "Application deployed on 8087 port"
-            echo "Access VM SSH via 2222 port or vagrant ssh web2"
+            echo "Web3 Application deployed on 8088 port"
+            echo "Access VM SSH via 2222 port or vagrant ssh web3"
+            echo "!!!Don't forget to change nginx configuration file"
+            echo "if you want to publish your application!!!"
+            echo ""
+            sudo vagrant up web4 --provider virtualbox
+            echo ""
+            echo "Web4 Application deployed on 8089 port"
+            echo "Access VM SSH via 2222 port or vagrant ssh web4"
+            echo "!!!Don't forget to change nginx configuration file"
+            echo "if you want to publish your application!!!"
             echo ""
             echo "Do you want to do anything more? y/n"
             read choice5
-            echo " "
               if [ "$choice5" = "y" ]
               then
                 main;
@@ -94,7 +111,7 @@ function existing {
   echo "Renewing status.. Prunning invalid entries..."
   sudo vagrant global-status --prune
   echo " "
-  echo "Please select option you want to do: start/stop/destroy"
+  echo "Please select option you want to do: start/suspend/destroy"
   read choice3
     if [ "$choice3" = "start" ]
     then
@@ -113,7 +130,7 @@ function existing {
           exit
         fi
     fi
-    if [ "$choice3" = "stop" ]
+    if [ "$choice3" = "suspend" ]
     then
       echo " "
       echo "Please select machine id you want to suspend:"
@@ -156,8 +173,8 @@ function nginx {
     then
       echo " "
       echo "Which nginx configuration file should be asigned as main?"
-      echo "1. WEB1 application VM (MAIN)"
-      echo "2. WEB2 application VM (TEST)"
+      echo "1. WEB1 and WEB2 application VMs (MAIN)"
+      echo "2. WEB3 and WEB4 application VMs (TEST/BACKUP)"
       echo ""
       read choice6
         if [ $choice6 = 1 ]
@@ -225,6 +242,45 @@ function install {
   main;
 }
 
+function healthcheck {
+
+  echo "Please select one of the options for healthcheck: run/stop"
+  read output7
+
+  if [ "$output7" = "run" ]
+  then
+
+    isonline1=$(vagrant global-status --prune --machine-readable | grep -A 2 -B 1 info,web1)
+    isonline2=$(vagrant global-status --prune --machine-readable | grep -A 2 -B 1 info,web2)
+
+    if [[ $isonline1 == *"running"* && $isonline2 == *"running"* ]]
+    then
+        echo "Deploying healthcheck process..."
+        cd scripts ; ./healthcheck.sh >> healthcheck.log &
+        echo "Healthcheck is running in a background"
+        read -n 1 -s -r -p "Press any key to continue..."
+        echo " "
+        main;
+      else
+        echo "Please start web1 and web2 VMs before running healthcheck process"
+        read -n 1 -s -r -p "Press any key to continue..."
+        echo ""
+        main;
+    fi
+  fi
+
+  if [ "$output7" = "stop" ]
+  then
+    pkill healthcheck.sh
+    echo "Process should be killed"
+    read -n 1 -s -r -p "Press any key to continue..."
+    main;
+  else
+    echo "Something is not right"
+  fi
+
+}
+
 function main {
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   echo "~~~~~~~~~ Welcome to marsx deployment console ~~~~~~~~~~"
@@ -232,9 +288,10 @@ function main {
   echo " "
   echo "1. Check currently deployed vmbox statuses"
   echo "2. Deploy and Run vmbox machine with application"
-  echo "3. Run/Stop/Destroy existing vmbox machine"
+  echo "3. Run/Suspend/Destroy existing vmbox machine"
   echo "4. Change nginx configuration file"
   echo "5. Install packages needed for deployment"
+  echo "6. Run/Stop HealthCheck process"
   echo " "
   echo "Please select between 1-5 choices:"
 
@@ -264,6 +321,11 @@ function main {
   then
       install;
   fi
+
+  if [ $choice = 6 ]
+  then
+      healthcheck;
+  fi;
 
   echo "Bye, have a good time!"
 };

@@ -4,17 +4,29 @@
 Vagrant.require_version ">= 1.7.0" # required Vagrant version 1.7 or above.
 
 Vagrant.configure("2") do |config|
-  #Main application VM
+  #web1
   config.vm.define "web1" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web1"
     subconfig.vm.network "forwarded_port", guest: 8081, host: 8086
 end
-  #VM for updated application  
+  #web2
   config.vm.define "web2" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web2"
     subconfig.vm.network "forwarded_port", guest: 8081, host: 8087
+end
+  #web2
+  config.vm.define "web3" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "web2"
+    subconfig.vm.network "forwarded_port", guest: 8081, host: 8088
+end
+  #web2
+  config.vm.define "web4" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "web2"
+    subconfig.vm.network "forwarded_port", guest: 8081, host: 8089
 end
   #Playbook for Network, Docker binary and application containers initialization
 config.vm.provision "ansible" do |ansible|
