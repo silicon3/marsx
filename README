@@ -1,0 +1,16 @@
+# Update v0.2
+
+## Redundancy
+- Added two more VM machines (Web3 and Web4) for full HA solution. Now Web1 and Web2 machines works as a main traffic handlers, and Web3 with Web4 as a test/backup traffic handlers.
+
+## HealthCheck
+- Added healthcheck script which works in a background. It cooperates with redeploy script.
+  - You can Enable or Disable it from ./deployment script choosing option "6. Run/Stop HealthCheck process".
+
+## Auto redeploy
+- Added Redeploy script which works in a background. It cooperates with healthcheck script. If one of the main machine doesn't forward traffic, then it starts auto redeploying web1 and web2 machines, then reenabling healthcheck script again.
+  - Script availability enables automatically with healthcheck script, so don't forget to enable it first.
+
+## Added Logging
+- Healthcheck and Auto redeploy scripts automatically logging outputs into /scripts/healthcheck.log and /scripts/redeploy.log files.
+  - Function automatically starts working when healthcheck script is enabled.
